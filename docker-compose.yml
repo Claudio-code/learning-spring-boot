@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  library-api:
+    container_name: library-api
+    build: .
+    image: claudio2424/spring-boot-docker-app
+    ports:
+      - "8080:8080"
+    networks:
+      - library-api-network
+    depends_on:
+      - library-api-redis
+
+  library-api-redis:
+    image: redis:alpine
+    container_name: library-api-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis:/data
+    networks:
+      - library-api-network
+
+networks:
+  library-api-network:
+    driver: bridge
