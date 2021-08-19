@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="main" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.learning.spring.library.Application" />
+    <module name="demo" />
+    <option name="PROGRAM_PARAMETERS" value="http://localhost:8080" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
