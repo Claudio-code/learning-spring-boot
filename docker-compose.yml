@@ -4,7 +4,7 @@ services:
   library-api:
     container_name: library-api
     build: .
-    image: claudio2424/spring-boot-docker-app
+    image: demo:0.0.1-SNAPSHOT
     ports:
       - "8080:8080"
     networks:
