@@ -1,6 +1,6 @@
 package com.learning.spring.library.api.resource;
 
-import com.learning.spring.library.api.DTO.BookDTO;
+import com.learning.spring.library.api.dto.BookDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
