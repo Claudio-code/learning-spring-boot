@@ -7,3 +7,6 @@ stop:
 
 start:
 	docker-compose up -d
+
+run-tests:
+	mvn clean test
