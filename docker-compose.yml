@@ -12,13 +12,26 @@ services:
     depends_on:
       - library-api-redis
 
+  db:
+    image: mysql:8.0.25
+    container_name: library-api-db
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./.database/data:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=library_db
+      - MYSQL_ROOT_PASSWORD=root
+    networks:
+      - library-api-network
+
   library-api-redis:
     image: redis:alpine
     container_name: library-api-redis
     ports:
       - "6379:6379"
     volumes:
-      - ./redis:/data
+      - ./.database/redis:/data
     networks:
       - library-api-network
 
