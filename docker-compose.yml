@@ -8,8 +8,6 @@ services:
       - "8080:8080"
     networks:
       - library-api-network
-    env_file:
-      - .env
     depends_on:
       - library-api-redis
       - library-api-db
