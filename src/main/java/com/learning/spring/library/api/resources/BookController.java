@@ -1,4 +1,4 @@
-package com.learning.spring.library.api.resource;
+package com.learning.spring.library.api.resources;
 
 import com.learning.spring.library.api.dto.BookDTO;
 import com.learning.spring.library.api.model.entity.Book;

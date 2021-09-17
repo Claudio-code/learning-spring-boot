@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @WebMvcTest
 @AutoConfigureMockMvc
-public class BookControllerTest {
+class BookControllerTest {
     static String BOOK_API = "/api/books";
 
     @Autowired
@@ -37,7 +37,7 @@ public class BookControllerTest {
 
     @Test
     @DisplayName("should create book with success.")
-    public void createBookTest() throws Exception {
+    void createBookTest() throws Exception {
         BookDTO bookDTO = BookDTO.builder()
                 .author("Author")
                 .isbn("123")
