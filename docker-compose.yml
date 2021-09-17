@@ -4,15 +4,17 @@ services:
   library-api:
     container_name: library-api
     build: .
-    image: demo:0.0.1-SNAPSHOT
     ports:
       - "8080:8080"
     networks:
       - library-api-network
+    env_file:
+      - .env
     depends_on:
       - library-api-redis
+      - library-api-db
 
-  db:
+  library-api-db:
     image: mysql:8.0.25
     container_name: library-api-db
     ports:
