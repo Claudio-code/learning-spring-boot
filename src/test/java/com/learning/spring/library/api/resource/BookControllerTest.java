@@ -2,10 +2,13 @@ package com.learning.spring.library.api.resource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learning.spring.library.api.dto.BookDTO;
+import com.learning.spring.library.api.model.entity.Book;
 import com.learning.spring.library.service.BookService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.BDDMockito;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -41,6 +44,14 @@ public class BookControllerTest {
                 .title("My book")
                 .build();
 
+        Book bookMock = Book.builder()
+                .id(10L)
+                .author("Author")
+                .isbn("123")
+                .title("My book")
+                .build();
+
+        BDDMockito.given(bookService.save(Mockito.any(Book.class))).willReturn(bookMock);
         String json = new ObjectMapper().writeValueAsString(bookDTO);
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
@@ -53,9 +64,9 @@ public class BookControllerTest {
                 perform(request)
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").isNotEmpty())
-                .andExpect(jsonPath("title").value("My book"))
-                .andExpect(jsonPath("author").value("Author"))
-                .andExpect(jsonPath("isbn").value("123"))
+                .andExpect(jsonPath("title").value(bookDTO.getTitle()))
+                .andExpect(jsonPath("author").value(bookDTO.getAuthor()))
+                .andExpect(jsonPath("isbn").value(bookDTO.getIsbn()))
         ;
     }
 }
