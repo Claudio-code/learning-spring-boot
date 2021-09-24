@@ -3,14 +3,17 @@ package com.learning.spring.library.service;
 import com.learning.spring.library.api.model.entity.Book;
 import com.learning.spring.library.api.model.repository.BookRepository;
 import com.learning.spring.library.service.implementation.BookServiceImpl;
+import com.learning.spring.library.utils.CommonFeaturesUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,25 +33,14 @@ class BookServiceTest {
     @Test
     @DisplayName("should save book")
     void saveBookTest() {
-        Book book = Book.builder()
-                .isbn("123")
-                .author("cleberson")
-                .title("The Adventures")
-                .build();
-
-        Mockito.when(bookRepository.save(book)).thenReturn(
-                Book.builder()
-                        .id(1L)
-                        .isbn("123")
-                        .author("cleberson")
-                        .title("The Adventures")
-                        .build()
-        );
+        Book book = CommonFeaturesUtils.createBook();
+        Mockito.when(bookRepository.save(book))
+                .thenReturn(CommonFeaturesUtils.createBook());
         Book savedBook = bookService.save(book);
 
         assertThat(savedBook.getId()).isNotNull();
-        assertThat(savedBook.getIsbn()).isEqualTo("123");
-        assertThat(savedBook.getTitle()).isEqualTo("The Adventures");
-        assertThat(savedBook.getAuthor()).isEqualTo("cleberson");
+        assertThat(savedBook.getIsbn()).isEqualTo(book.getIsbn());
+        assertThat(savedBook.getTitle()).isEqualTo(book.getTitle());
+        assertThat(savedBook.getAuthor()).isEqualTo(book.getAuthor());
     }
 }

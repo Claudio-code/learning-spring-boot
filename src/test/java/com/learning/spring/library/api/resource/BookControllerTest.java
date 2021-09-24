@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learning.spring.library.api.dto.BookDTO;
 import com.learning.spring.library.api.model.entity.Book;
+import com.learning.spring.library.exception.IsbnAlreadyUsedByAnotherBookException;
 import com.learning.spring.library.service.BookService;
+import com.learning.spring.library.utils.CommonFeaturesUtils;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,19 +44,8 @@ class BookControllerTest {
     @Test
     @DisplayName("should create book with success.")
     void createBookTest() throws Exception {
-        BookDTO bookDTO = BookDTO.builder()
-                .author("Author")
-                .isbn("123")
-                .title("My book")
-                .build();
-
-        Book bookMock = Book.builder()
-                .id(10L)
-                .author("Author")
-                .isbn("123")
-                .title("My book")
-                .build();
-
+        BookDTO bookDTO = CommonFeaturesUtils.createBookDTO();
+        Book bookMock = CommonFeaturesUtils.createBook();
         BDDMockito.given(bookService.save(Mockito.any(Book.class))).willReturn(bookMock);
         String json = new ObjectMapper().writeValueAsString(bookDTO);
 
@@ -87,5 +78,25 @@ class BookControllerTest {
         mvc.perform(request)
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("errors", hasSize(3)));
+    }
+
+    @Test
+    @DisplayName("should throw error to try register book with isbn already used by another book")
+    void createBookWithDuplicatedIsbn() throws Exception {
+        BookDTO bookDTO = CommonFeaturesUtils.createBookDTO();
+        String json = new ObjectMapper().writeValueAsString(bookDTO);
+        BDDMockito.given(bookService.save(Mockito.any(Book.class)))
+                .willThrow(new IsbnAlreadyUsedByAnotherBookException());
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(BOOK_API)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mvc.perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("errors", hasSize(1)))
+                .andExpect(jsonPath("errors[0]").value(IsbnAlreadyUsedByAnotherBookException.MESSAGE));
     }
 }
