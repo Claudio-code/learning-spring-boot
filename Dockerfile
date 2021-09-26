@@ -1,4 +1,4 @@
-FROM maven:3.8.2-openjdk-11-slim as build
+FROM maven:3.8.2-adoptopenjdk-11 as build
 
 WORKDIR /build
 
@@ -6,7 +6,7 @@ COPY . .
 
 RUN mvn clean package --batch-mode
 
-FROM openjdk:11-jre-slim
+FROM adoptopenjdk:11-jre-hotspot-focal
 
 COPY --from=build /build/target/demo-0.0.1-SNAPSHOT.jar /app.jar
 
