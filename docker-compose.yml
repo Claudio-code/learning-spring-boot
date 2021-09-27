@@ -21,10 +21,24 @@ services:
       - ./.database/data:/var/lib/mysql
       - ./.database:/docker-entrypoint-initdb.d
     environment:
-      - MYSQL_DATABASE=library_db
+      - MYSQL_DATABASE=library
       - MYSQL_ROOT_PASSWORD=root
     networks:
       - library-api-network
+
+  redis-commander:
+     container_name: redis-commander
+     hostname: redis-commander
+     image: rediscommander/redis-commander:latest
+     restart: always
+     environment:
+     - REDIS_HOSTS=library-api-redis
+     ports:
+     - "1004:8081"
+     networks:
+       - library-api-network
+     depends_on:
+       - library-api-redis
 
   library-api-redis:
     image: redis:alpine

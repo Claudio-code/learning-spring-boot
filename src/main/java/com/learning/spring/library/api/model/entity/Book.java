@@ -2,6 +2,7 @@ package com.learning.spring.library.api.model.entity;
 
 import lombok.*;
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Getter
 @Setter
@@ -10,7 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "books")
-public class Book {
+public class Book implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

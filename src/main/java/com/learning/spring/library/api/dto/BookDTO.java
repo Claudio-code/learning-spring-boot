@@ -3,13 +3,14 @@ package com.learning.spring.library.api.dto;
 import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
+import java.io.Serializable;
 
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookDTO {
+public class BookDTO implements Serializable {
     private Long id;
 
     @NotEmpty(message = "title must not be empty")

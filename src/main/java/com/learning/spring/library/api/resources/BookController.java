@@ -4,8 +4,11 @@ import com.learning.spring.library.api.dto.BookDTO;
 import com.learning.spring.library.api.model.entity.Book;
 import com.learning.spring.library.service.BookService;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
 import javax.validation.Valid;
 
 @RestController
@@ -13,6 +16,7 @@ import javax.validation.Valid;
 public class BookController implements BaseController {
     private final BookService service;
     private final ModelMapper modelMapper;
+
 
     public BookController(BookService service, ModelMapper modelMapper) {
         this.service = service;
@@ -28,8 +32,12 @@ public class BookController implements BaseController {
     }
 
     @GetMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Cacheable(cacheNames = "book-get-one-", key = "#id", sync = true)
     public BookDTO get(@PathVariable Long id) {
-        var book = service.getById(id);
-        return modelMapper.map(book, BookDTO.class);
+        return service
+                .getById(id)
+                .map(book -> modelMapper.map(book, BookDTO.class))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 }
