@@ -4,7 +4,7 @@ WORKDIR /build
 
 COPY . .
 
-RUN mvn clean package --batch-mode
+RUN mvn clean package -DskipTests --batch-mode
 
 FROM adoptopenjdk:11-jre-hotspot-focal
 
