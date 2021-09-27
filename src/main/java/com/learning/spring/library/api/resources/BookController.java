@@ -26,4 +26,10 @@ public class BookController implements BaseController {
         bookEntity = service.save(bookEntity);
         return modelMapper.map(bookEntity, BookDTO.class);
     }
+
+    @GetMapping("{id}")
+    public BookDTO get(@PathVariable Long id) {
+        var book = service.getById(id);
+        return modelMapper.map(book, BookDTO.class);
+    }
 }

@@ -24,6 +24,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Optional;
+
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -98,5 +100,23 @@ class BookControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("errors", hasSize(1)))
                 .andExpect(jsonPath("errors[0]").value(IsbnAlreadyUsedByAnotherBookException.MESSAGE));
+    }
+
+    @Test
+    @DisplayName("should get information's book")
+    void getBookDetailsTest() throws Exception {
+        var book = CommonFeaturesUtils.createBook();
+        BDDMockito.given(bookService.getById(book.getId())).willReturn(Optional.of(book));
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get(BOOK_API.concat("/" + book.getId()))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id").isNotEmpty())
+                .andExpect(jsonPath("title").value(book.getTitle()))
+                .andExpect(jsonPath("author").value(book.getAuthor()))
+                .andExpect(jsonPath("isbn").value(book.getIsbn()));
     }
 }
