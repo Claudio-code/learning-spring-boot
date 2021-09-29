@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -25,9 +26,12 @@ class BookServiceTest {
     @MockBean
     BookRepository bookRepository;
 
+    @MockBean
+    ModelMapper modelMapper;
+
     @BeforeEach
     void setUp() {
-        this.bookService = new BookServiceImpl(bookRepository);
+        this.bookService = new BookServiceImpl(bookRepository, modelMapper);
     }
 
     @Test

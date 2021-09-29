@@ -13,6 +13,8 @@ import java.io.Serializable;
 @Table(name = "books")
 public class Book implements Serializable {
 
+    public static final String CACHE_NAME = "book";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

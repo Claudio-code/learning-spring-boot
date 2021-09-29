@@ -1,13 +1,11 @@
 package com.learning.spring.library.api.resource;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learning.spring.library.api.dto.BookDTO;
 import com.learning.spring.library.api.model.entity.Book;
 import com.learning.spring.library.exception.IsbnAlreadyUsedByAnotherBookException;
 import com.learning.spring.library.service.BookService;
 import com.learning.spring.library.utils.CommonFeaturesUtils;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,14 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import java.util.Optional;
+import org.springframework.web.server.ResponseStatusException;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -106,7 +104,7 @@ class BookControllerTest {
     @DisplayName("should get information's book")
     void getBookDetailsTest() throws Exception {
         var book = CommonFeaturesUtils.createBook();
-        BDDMockito.given(bookService.getById(book.getId())).willReturn(Optional.of(book));
+        BDDMockito.given(bookService.getById(book.getId())).willReturn(CommonFeaturesUtils.createBookDTO());
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .get(BOOK_API.concat("/" + book.getId()))
@@ -123,7 +121,7 @@ class BookControllerTest {
     @Test
     @DisplayName("should return resource not found when book researched not exists")
     void bookNotFound() throws Exception {
-        BDDMockito.given(bookService.getById(Mockito.anyLong())).willReturn(Optional.empty());
+        BDDMockito.given(bookService.getById(Mockito.anyLong())).willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .get(BOOK_API.concat("/" + 1L))
                 .accept(MediaType.APPLICATION_JSON);
