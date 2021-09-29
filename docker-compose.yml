@@ -30,7 +30,6 @@ services:
      container_name: redis-commander
      hostname: redis-commander
      image: rediscommander/redis-commander:latest
-     restart: always
      environment:
      - REDIS_HOSTS=library-api-redis
      ports:
