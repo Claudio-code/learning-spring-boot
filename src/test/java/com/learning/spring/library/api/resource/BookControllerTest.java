@@ -104,7 +104,9 @@ class BookControllerTest {
     @DisplayName("should get information's book")
     void getBookDetailsTest() throws Exception {
         var book = CommonFeaturesUtils.createBook();
-        BDDMockito.given(bookService.getById(book.getId())).willReturn(CommonFeaturesUtils.createBookDTO());
+        var bookDTO = CommonFeaturesUtils.createBookDTO();
+        bookDTO.setId(book.getId());
+        BDDMockito.given(bookService.getById(book.getId())).willReturn(bookDTO);
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .get(BOOK_API.concat("/" + book.getId()))
