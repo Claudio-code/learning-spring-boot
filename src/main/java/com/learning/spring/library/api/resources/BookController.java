@@ -47,7 +47,11 @@ public class BookController implements BaseController {
     @PutMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
     public BookDTO update(@PathVariable Long id, @RequestBody @Valid BookDTO bookDTO) {
-        var book = service.update(id, bookDTO);
+        var bookUpdate = service.getById(id);
+        bookUpdate.setTitle(bookDTO.getTitle());
+        bookUpdate.setAuthor(bookDTO.getAuthor());
+        var book = service.update(bookUpdate);
+
         return modelMapper.map(book, BookDTO.class);
     }
 }

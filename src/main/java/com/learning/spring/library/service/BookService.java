@@ -1,6 +1,5 @@
 package com.learning.spring.library.service;
 
-import com.learning.spring.library.api.dto.BookDTO;
 import com.learning.spring.library.api.model.entity.Book;
 
 public interface BookService {
@@ -10,5 +9,5 @@ public interface BookService {
 
     void delete(Book book);
 
-    Book update(Long id, BookDTO bookDTO);
+    Book update(Book book);
 }

@@ -1,5 +1,6 @@
 package com.learning.spring.library.api.resource;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learning.spring.library.api.dto.BookDTO;
 import com.learning.spring.library.api.model.entity.Book;
@@ -150,5 +151,46 @@ class BookControllerTest {
                 .delete(BOOK_API.concat("/" + 1L));
 
         mvc.perform(request).andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("should update book")
+    void shouldUpdateBook() throws Exception {
+        Book book = CommonFeaturesUtils.createBook();
+        Book bookToJson = CommonFeaturesUtils.createBook();
+        bookToJson.setAuthor("vanderson");
+        bookToJson.setTitle("update test");
+        String json = new ObjectMapper().writeValueAsString(bookToJson);
+
+        BDDMockito.given(bookService.getById(bookToJson.getId())).willReturn(book);
+        BDDMockito.given(bookService.update(book)).willReturn(bookToJson);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .put(BOOK_API.concat("/" + bookToJson.getId()))
+                .content(json)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("title").value(bookToJson.getTitle()))
+                .andExpect(jsonPath("author").value(bookToJson.getAuthor()))
+                .andExpect(jsonPath("id").value(bookToJson.getId()));
+    }
+
+    @Test
+    @DisplayName("should return error if nonexistent book")
+    void shouldReturnErrorIfNonexistentBookTest() throws Exception {
+        String json = new ObjectMapper().writeValueAsString(CommonFeaturesUtils.createBook());
+        var exception = new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        BDDMockito.given(bookService.getById(Mockito.anyLong())).willThrow(exception);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .put(BOOK_API.concat("/" + Mockito.anyLong()))
+                .content(json)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mvc.perform(requestBuilder)
+                .andExpect(status().isNotFound());
     }
 }

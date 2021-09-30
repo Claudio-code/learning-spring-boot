@@ -21,7 +21,7 @@ public class CommonFeaturesUtils {
                 .build();
     }
 
-    public static BookDTO BookDTOWithId() {
+    public static BookDTO createBookDTOWithId() {
         return BookDTO.builder()
                 .id(10L)
                 .author("Author")

@@ -1,6 +1,5 @@
 package com.learning.spring.library.service.implementation;
 
-import com.learning.spring.library.api.dto.BookDTO;
 import com.learning.spring.library.api.model.entity.Book;
 import com.learning.spring.library.api.model.repository.BookRepository;
 import com.learning.spring.library.exception.IsbnAlreadyUsedByAnotherBookException;
@@ -43,15 +42,8 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    @CachePut(cacheNames = Book.CACHE_NAME, key = "#id")
-    public Book update(Long id, BookDTO bookDTO) {
-        var bookUpdate = bookRepository.findById(id)
-                .map(book -> {
-                    book.setAuthor(bookDTO.getAuthor());
-                    book.setTitle(bookDTO.getTitle());
-                    return book;
-                })
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        return bookRepository.save(bookUpdate);
+    @CachePut(cacheNames = Book.CACHE_NAME, key = "#book.id")
+    public Book update(Book book) {
+        return bookRepository.save(book);
     }
 }
