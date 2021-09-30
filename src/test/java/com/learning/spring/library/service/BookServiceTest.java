@@ -2,6 +2,7 @@ package com.learning.spring.library.service;
 
 import com.learning.spring.library.api.model.entity.Book;
 import com.learning.spring.library.api.model.repository.BookRepository;
+import com.learning.spring.library.exception.InvalidBookException;
 import com.learning.spring.library.exception.IsbnAlreadyUsedByAnotherBookException;
 import com.learning.spring.library.service.implementation.BookServiceImpl;
 import com.learning.spring.library.utils.CommonFeaturesUtils;
@@ -21,6 +22,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
@@ -83,5 +85,24 @@ class BookServiceTest {
         Throwable throwable = Assertions.catchThrowable(() -> bookService.getById(bookId));
 
         assertThat(throwable).isInstanceOf(ResponseStatusException.class);
+    }
+
+
+    @Test
+    @DisplayName("should return error if book not found in database")
+    void shouldDeletedBookWhenFoundItInDatabase() {
+        Book book = CommonFeaturesUtils.createBook();
+        bookService.delete(book);
+
+        Mockito.verify(bookRepository, Mockito.times(1)).delete(book);
+    }
+
+    @Test
+    @DisplayName("should return error if book fields is null")
+    void shouldReturnErrorIfBookFieldsIsNull() {
+        Book book = new Book();
+
+        assertThrows(InvalidBookException.class, () -> bookService.delete(book));
+        Mockito.verify(bookRepository, Mockito.never()).delete(book);
     }
 }

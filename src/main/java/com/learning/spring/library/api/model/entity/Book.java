@@ -27,4 +27,8 @@ public class Book implements Serializable {
 
     @Column
     private String isbn;
+
+    public boolean validFields() {
+        return isbn != null && author != null && title != null && id != null;
+    }
 }
