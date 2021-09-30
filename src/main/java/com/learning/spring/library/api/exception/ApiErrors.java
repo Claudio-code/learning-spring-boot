@@ -9,6 +9,10 @@ import java.util.List;
 public class ApiErrors {
     private final List<String> errors;
 
+    public ApiErrors() {
+        this.errors = new ArrayList<>();
+    }
+
     public ApiErrors(BindingResult bindingResult) {
         this.errors = new ArrayList<>();
         bindingResult.getAllErrors()

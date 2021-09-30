@@ -20,4 +20,14 @@ public class CommonFeaturesUtils {
                 .title("My book")
                 .build();
     }
+
+    public static BookDTO BookDTOWithId() {
+        return BookDTO.builder()
+                .id(10L)
+                .author("Author")
+                .isbn("123")
+                .title("My book")
+                .build();
+    }
+
 }

@@ -1,8 +1,8 @@
 package com.learning.spring.library.model.repository;
 
-import com.learning.spring.library.api.model.entity.Book;
 import com.learning.spring.library.api.model.repository.BookRepository;
 import com.learning.spring.library.utils.CommonFeaturesUtils;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

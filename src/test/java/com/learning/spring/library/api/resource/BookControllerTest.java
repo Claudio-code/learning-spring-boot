@@ -6,6 +6,7 @@ import com.learning.spring.library.api.model.entity.Book;
 import com.learning.spring.library.exception.IsbnAlreadyUsedByAnotherBookException;
 import com.learning.spring.library.service.BookService;
 import com.learning.spring.library.utils.CommonFeaturesUtils;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -104,10 +105,7 @@ class BookControllerTest {
     @DisplayName("should get information's book")
     void getBookDetailsTest() throws Exception {
         var book = CommonFeaturesUtils.createBook();
-        var bookDTO = CommonFeaturesUtils.createBookDTO();
-        bookDTO.setId(book.getId());
-        BDDMockito.given(bookService.getById(book.getId())).willReturn(bookDTO);
-
+        BDDMockito.given(bookService.getById(book.getId())).willReturn(book);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .get(BOOK_API.concat("/" + book.getId()))
                 .accept(MediaType.APPLICATION_JSON);
@@ -123,12 +121,34 @@ class BookControllerTest {
     @Test
     @DisplayName("should return resource not found when book researched not exists")
     void bookNotFound() throws Exception {
-        BDDMockito.given(bookService.getById(Mockito.anyLong())).willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
+        var exception = new ResponseStatusException(HttpStatus.NOT_FOUND);
+        BDDMockito.given(bookService.getById(Mockito.anyLong())).willThrow(exception);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .get(BOOK_API.concat("/" + 1L))
                 .accept(MediaType.APPLICATION_JSON);
 
-        mvc.perform(request)
-                .andExpect(status().isNotFound());
+        mvc.perform(request).andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("should return status not content when deleted book")
+    void deleteBookTest() throws Exception {
+        var book = CommonFeaturesUtils.createBook();
+        BDDMockito.given(bookService.getById(book.getId())).willReturn(book);
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .delete(BOOK_API.concat("/" + book.getId()));
+
+        mvc.perform(request).andExpect(status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("should return Errors if book not found in database")
+    void deleteIntentBookTest() throws Exception {
+        var exception = new ResponseStatusException(HttpStatus.NOT_FOUND);
+        BDDMockito.given(bookService.getById(Mockito.anyLong())).willThrow(exception);
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .delete(BOOK_API.concat("/" + 1L));
+
+        mvc.perform(request).andExpect(status().isNotFound());
     }
 }

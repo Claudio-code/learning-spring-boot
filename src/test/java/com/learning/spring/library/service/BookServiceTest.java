@@ -5,13 +5,13 @@ import com.learning.spring.library.api.model.repository.BookRepository;
 import com.learning.spring.library.exception.IsbnAlreadyUsedByAnotherBookException;
 import com.learning.spring.library.service.implementation.BookServiceImpl;
 import com.learning.spring.library.utils.CommonFeaturesUtils;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
-import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -26,12 +26,9 @@ class BookServiceTest {
     @MockBean
     BookRepository bookRepository;
 
-    @MockBean
-    ModelMapper modelMapper;
-
     @BeforeEach
     void setUp() {
-        this.bookService = new BookServiceImpl(bookRepository, modelMapper);
+        this.bookService = new BookServiceImpl(bookRepository);
     }
 
     @Test
