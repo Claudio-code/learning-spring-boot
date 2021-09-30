@@ -1,6 +1,5 @@
 package com.learning.spring.library.api.resource;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learning.spring.library.api.dto.BookDTO;
 import com.learning.spring.library.api.model.entity.Book;
