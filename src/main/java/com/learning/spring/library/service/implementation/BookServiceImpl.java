@@ -2,7 +2,6 @@ package com.learning.spring.library.service.implementation;
 
 import com.learning.spring.library.api.model.entity.Book;
 import com.learning.spring.library.api.model.repository.BookRepository;
-import com.learning.spring.library.exception.InvalidBookException;
 import com.learning.spring.library.exception.IsbnAlreadyUsedByAnotherBookException;
 import com.learning.spring.library.service.BookService;
 
@@ -39,21 +38,14 @@ public class BookServiceImpl implements BookService {
     @Override
     @CacheEvict(cacheNames = Book.CACHE_NAME, key = "#book.id")
     public void delete(Book book) {
-        validateBook(book);
+        book.validFields();
         bookRepository.delete(book);
     }
 
     @Override
     @CachePut(cacheNames = Book.CACHE_NAME, key = "#book.id")
     public Book update(Book book) {
+        book.validFields();
         return bookRepository.save(book);
-    }
-
-    private void validateBook(Book book) {
-        if (book.validFields()) {
-            return;
-        }
-
-        throw new InvalidBookException();
     }
 }

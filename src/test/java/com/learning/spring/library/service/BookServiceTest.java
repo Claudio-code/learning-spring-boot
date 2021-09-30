@@ -105,4 +105,17 @@ class BookServiceTest {
         assertThrows(InvalidBookException.class, () -> bookService.delete(book));
         Mockito.verify(bookRepository, Mockito.never()).delete(book);
     }
+
+    @Test
+    @DisplayName("should updated book if found it in database")
+    void shouldUpdatedBookIfFoundItInDatabase() {
+        Book book = CommonFeaturesUtils.createBook();
+        Mockito.when(bookService.update(book)).thenReturn(book);
+        Book bookUpdated = bookService.update(book);
+
+        assertThat(bookUpdated.getId()).isNotNull();
+        assertThat(bookUpdated.getIsbn()).isEqualTo(book.getIsbn());
+        assertThat(bookUpdated.getTitle()).isEqualTo(book.getTitle());
+        assertThat(bookUpdated.getAuthor()).isEqualTo(book.getAuthor());
+    }
 }

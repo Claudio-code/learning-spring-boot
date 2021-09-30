@@ -1,5 +1,6 @@
 package com.learning.spring.library.api.model.entity;
 
+import com.learning.spring.library.exception.InvalidBookException;
 import lombok.*;
 import javax.persistence.*;
 import java.io.Serializable;
@@ -28,7 +29,11 @@ public class Book implements Serializable {
     @Column
     private String isbn;
 
-    public boolean validFields() {
-        return isbn != null && author != null && title != null && id != null;
+    public void validFields() {
+        if (isbn != null || author != null || title != null || id != null) {
+            return;
+        }
+        throw new InvalidBookException();
     }
+
 }
