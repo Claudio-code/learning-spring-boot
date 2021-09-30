@@ -75,7 +75,6 @@ class BookControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .content(json);
 
-
         mvc.perform(request)
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("errors", hasSize(3)));
@@ -189,7 +188,6 @@ class BookControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON);
 
-        mvc.perform(requestBuilder)
-                .andExpect(status().isNotFound());
+        mvc.perform(requestBuilder).andExpect(status().isNotFound());
     }
 }
