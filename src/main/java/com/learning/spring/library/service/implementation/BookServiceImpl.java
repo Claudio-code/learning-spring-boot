@@ -7,6 +7,7 @@ import com.learning.spring.library.exception.IsbnAlreadyUsedByAnotherBookExcepti
 import com.learning.spring.library.service.BookService;
 
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -39,5 +40,18 @@ public class BookServiceImpl implements BookService {
     @CacheEvict(cacheNames = Book.CACHE_NAME, key = "#book.id")
     public void delete(Book book) {
         bookRepository.delete(book);
+    }
+
+    @Override
+    @CachePut(cacheNames = Book.CACHE_NAME, key = "#id")
+    public Book update(Long id, BookDTO bookDTO) {
+        var bookUpdate = bookRepository.findById(id)
+                .map(book -> {
+                    book.setAuthor(bookDTO.getAuthor());
+                    book.setTitle(bookDTO.getTitle());
+                    return book;
+                })
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return bookRepository.save(bookUpdate);
     }
 }
