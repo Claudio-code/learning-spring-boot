@@ -13,8 +13,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -56,5 +60,28 @@ class BookServiceTest {
         assertThat(exception)
                 .isInstanceOf(IsbnAlreadyUsedByAnotherBookException.class)
                 .hasMessage(IsbnAlreadyUsedByAnotherBookException.MESSAGE);
+    }
+
+    @Test
+    @DisplayName("should throw get book when user passes id how parameter")
+    void shouldGetBookWhenUserPassesIdHowParameter() {
+        Book bookReturned = CommonFeaturesUtils.createBook();
+        Mockito.when(bookRepository.findById(bookReturned.getId())).thenReturn(Optional.of(bookReturned));
+        Book bookFound = bookService.getById(bookReturned.getId());
+
+        assertThat(bookFound.getId()).isEqualTo(bookReturned.getId());
+        assertThat(bookFound.getIsbn()).isEqualTo(bookReturned.getIsbn());
+        assertThat(bookFound.getAuthor()).isEqualTo(bookReturned.getAuthor());
+        assertThat(bookFound.getTitle()).isEqualTo(bookReturned.getTitle());
+    }
+
+    @Test
+    @DisplayName("should return error if book not found in database")
+    void shouldReturnErrorIfBookNotFoundInDatabase() {
+        Long bookId = Mockito.anyLong();
+        Mockito.when(bookRepository.findById(bookId)).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Throwable throwable = Assertions.catchThrowable(() -> bookService.getById(bookId));
+
+        assertThat(throwable).isInstanceOf(ResponseStatusException.class);
     }
 }
