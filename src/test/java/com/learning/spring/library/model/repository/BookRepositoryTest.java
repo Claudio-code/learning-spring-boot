@@ -1,5 +1,6 @@
 package com.learning.spring.library.model.repository;
 
+import com.learning.spring.library.api.model.entity.Book;
 import com.learning.spring.library.api.model.repository.BookRepository;
 import com.learning.spring.library.utils.CommonFeaturesUtils;
 
@@ -33,5 +34,49 @@ class BookRepositoryTest {
         var resultIfIsbnExists = bookRepository.existsByIsbn(book.getIsbn());
 
         assertThat(resultIfIsbnExists).isTrue();
+    }
+
+    @Test
+    @DisplayName("should save book entity and create id field")
+    void shouldSaveBookEntityAndCreateIdField() {
+        var bookToSave = CommonFeaturesUtils.createBookNotId();
+        var bookSaved = bookRepository.save(bookToSave);
+
+        assertThat(bookSaved.getId()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("should get book if it book exists")
+    void shouldGetBookIfItBookExists() {
+        var bookToSave = CommonFeaturesUtils.createBookNotId();
+        bookToSave = bookRepository.save(bookToSave);
+
+        var bookFound = bookRepository.findById(bookToSave.getId()).get();
+
+        assertThat(bookFound.getId()).isEqualTo(bookToSave.getId());
+        assertThat(bookFound.getIsbn()).isEqualTo(bookToSave.getIsbn());
+        assertThat(bookFound.getAuthor()).isEqualTo(bookToSave.getAuthor());
+        assertThat(bookFound.getTitle()).isEqualTo(bookToSave.getTitle());
+    }
+
+    @Test
+    @DisplayName("should get null book if book nonexistent")
+    void shouldGetNullBookIfBookNonexistent() {
+        var bookFound = entityManager.find(Book.class, 1L);
+
+        assertThat(bookFound).isNull();
+    }
+
+    @Test
+    @DisplayName("should return null later delete book")
+    void shouldReturnNullLaterDeleteBook() {
+        var bookToSave = CommonFeaturesUtils.createBookNotId();
+        entityManager.persist(bookToSave);
+
+        var bookFound = entityManager.find(Book.class, bookToSave.getId());
+        bookRepository.delete(bookFound);
+        var bookDeleted = entityManager.find(Book.class, bookToSave.getId());
+
+        assertThat(bookDeleted).isNull();
     }
 }
