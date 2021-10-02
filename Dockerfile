@@ -4,7 +4,7 @@ WORKDIR /build
 
 COPY . .
 
-RUN mvn clean package -DskipTests --batch-mode
+RUN mvn clean package -Dspring-boot.run.profiles=prod -DskipTests --batch-mode
 
 FROM adoptopenjdk:11-jre-hotspot-focal
 

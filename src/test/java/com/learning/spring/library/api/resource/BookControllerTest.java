@@ -190,4 +190,10 @@ class BookControllerTest {
 
         mvc.perform(requestBuilder).andExpect(status().isNotFound());
     }
+
+    @Test
+    @DisplayName("should returned books when parameters are sent")
+    void findBooksTest() {
+
+    }
 }

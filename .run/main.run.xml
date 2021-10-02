@@ -1,5 +1,8 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="main" type="Application" factoryName="Application">
+    <envs>
+      <env name="-Dspring-boot.run.profiles" value="dev" />
+    </envs>
     <option name="MAIN_CLASS_NAME" value="com.learning.spring.library.Application" />
     <module name="demo" />
     <option name="PROGRAM_PARAMETERS" value="http://localhost:8080" />
