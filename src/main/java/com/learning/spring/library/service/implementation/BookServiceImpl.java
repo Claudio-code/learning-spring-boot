@@ -8,6 +8,10 @@ import com.learning.spring.library.service.BookService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -47,5 +51,17 @@ public class BookServiceImpl implements BookService {
     public Book update(Book book) {
         book.validFields();
         return bookRepository.save(book);
+    }
+
+    @Override
+    public PageImpl<Book> find(Book filter, Pageable pageable) {
+        Example<Book> example = Example.of(filter,
+                ExampleMatcher
+                        .matching()
+                        .withIgnoreCase()
+                        .withIgnoreNullValues()
+                        .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)
+        );
+        return (PageImpl<Book>) bookRepository.findAll(example, pageable);
     }
 }

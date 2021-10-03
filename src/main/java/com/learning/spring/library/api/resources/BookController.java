@@ -5,10 +5,15 @@ import com.learning.spring.library.api.model.entity.Book;
 import com.learning.spring.library.service.BookService;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/books")
@@ -53,5 +58,17 @@ public class BookController implements BaseController {
         var book = service.update(bookUpdate);
 
         return modelMapper.map(book, BookDTO.class);
+    }
+
+    @GetMapping
+    public PageImpl<BookDTO> find(BookDTO filters, Pageable pageRequest) {
+        Book bookFilters = modelMapper.map(filters, Book.class);
+        Page<Book> result = service.find(bookFilters, pageRequest);
+        List<BookDTO> list = result.getContent()
+                .stream()
+                .map(entity -> modelMapper.map(entity, BookDTO.class))
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(list, pageRequest, result.getTotalElements());
     }
 }

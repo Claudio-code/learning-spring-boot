@@ -14,11 +14,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,6 +41,12 @@ class BookServiceTest {
     @BeforeEach
     void setUp() {
         this.bookService = new BookServiceImpl(bookRepository);
+    }
+
+    private Book makeValidSavedBook() {
+        Book bookReturned = CommonFeaturesUtils.createBook();
+        Mockito.when(bookRepository.findById(bookReturned.getId())).thenReturn(Optional.of(bookReturned));
+        return bookReturned;
     }
 
     @Test
@@ -67,8 +79,7 @@ class BookServiceTest {
     @Test
     @DisplayName("should throw get book when user passes id how parameter")
     void shouldGetBookWhenUserPassesIdHowParameter() {
-        Book bookReturned = CommonFeaturesUtils.createBook();
-        Mockito.when(bookRepository.findById(bookReturned.getId())).thenReturn(Optional.of(bookReturned));
+        Book bookReturned = makeValidSavedBook();
         Book bookFound = bookService.getById(bookReturned.getId());
 
         assertThat(bookFound.getId()).isEqualTo(bookReturned.getId());
@@ -117,5 +128,23 @@ class BookServiceTest {
         assertThat(bookUpdated.getIsbn()).isEqualTo(book.getIsbn());
         assertThat(bookUpdated.getTitle()).isEqualTo(book.getTitle());
         assertThat(bookUpdated.getAuthor()).isEqualTo(book.getAuthor());
+    }
+
+    @Test
+    @DisplayName("should filter books by properties")
+    void shouldFilterBooksByProperties() {
+        Book book = makeValidSavedBook();
+        List<Book> list = List.of(book);
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<Book> page = new PageImpl<>(list, pageRequest, 1);
+        Mockito.when(bookRepository.findAll(Mockito.any(Example.class), Mockito.any(PageRequest.class)))
+                .thenReturn(page);
+
+        Page<Book> result = bookService.find(book, pageRequest);
+
+        assertThat(result.getTotalElements()).isEqualTo(1);
+        assertThat(result.getContent()).isEqualTo(list);
+        assertThat(result.getPageable().getPageNumber()).isEqualTo(0);
+        assertThat(result.getPageable().getPageSize()).isEqualTo(10);
     }
 }
