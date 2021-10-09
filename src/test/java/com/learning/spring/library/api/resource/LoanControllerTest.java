@@ -128,4 +128,26 @@ class LoanControllerTest {
         Mockito.verify(loanService, Mockito.times(1))
                 .update(Mockito.any(Loan.class), Mockito.any(ReturnedLoanDTO.class));
     }
+
+    @Test
+    @DisplayName("should return error if loan nonexistent")
+    void shouldReturnErrorIfLoanNonexistent() throws Exception {
+        Loan loan = CommonFeaturesUtils.createLoan();
+        loan.setId(1L);
+        ReturnedLoanDTO returnedLoanDTO = ReturnedLoanDTO.builder().returned(true).build();
+        String json = new ObjectMapper().writeValueAsString(returnedLoanDTO);
+
+        BDDMockito.given(loanService.getById(loan.getId()))
+                .willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.patch(LOAN_API.concat("/1"))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mvc.perform(request)
+                .andExpect(status().isNotFound());
+        Mockito.verify(loanService, Mockito.never())
+                .update(Mockito.any(Loan.class), Mockito.any(ReturnedLoanDTO.class));
+    }
 }
