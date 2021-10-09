@@ -1,6 +1,6 @@
 package com.learning.spring.library.api.exception;
 
-import com.learning.spring.library.exception.IsbnAlreadyUsedByAnotherBookException;
+import com.learning.spring.library.exception.BusinessException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -21,7 +21,7 @@ public class ApiErrors {
                 .forEach(error -> this.errors.add(error.getDefaultMessage()));
     }
 
-    public ApiErrors(IsbnAlreadyUsedByAnotherBookException exception) {
+    public ApiErrors(BusinessException exception) {
         this.errors = List.of(exception.getMessage());
     }
 

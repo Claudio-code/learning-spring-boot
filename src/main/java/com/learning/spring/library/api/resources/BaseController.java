@@ -1,7 +1,7 @@
 package com.learning.spring.library.api.resources;
 
 import com.learning.spring.library.api.exception.ApiErrors;
-import com.learning.spring.library.exception.IsbnAlreadyUsedByAnotherBookException;
+import com.learning.spring.library.exception.BusinessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -19,10 +19,10 @@ public class BaseController {
         return new ApiErrors(validException.getBindingResult());
     }
 
-    @ExceptionHandler(IsbnAlreadyUsedByAnotherBookException.class)
+    @ExceptionHandler(BusinessException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrors handleIsbnAlreadyUsed(IsbnAlreadyUsedByAnotherBookException isbnException) {
-        return new ApiErrors(isbnException);
+    public ApiErrors handleIsbnAlreadyUsed(BusinessException businessException) {
+        return new ApiErrors(businessException);
     }
 
     @ExceptionHandler(ResponseStatusException.class)
