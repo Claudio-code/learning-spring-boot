@@ -7,6 +7,7 @@ import com.learning.spring.library.api.model.entity.Loan;
 import com.learning.spring.library.service.BookService;
 import com.learning.spring.library.service.LoanService;
 import com.learning.spring.library.utils.CommonFeaturesUtils;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
@@ -41,6 +42,7 @@ class LoanControllerTest {
     LoanService loanService;
 
     @Test
+    @DisplayName("should execute loan")
     void shouldExecuteLoan() throws Exception {
         var loanDTO = CommonFeaturesUtils.createLoanDTO();
         var loan = CommonFeaturesUtils.createLoan();
