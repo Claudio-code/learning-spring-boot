@@ -57,4 +57,12 @@ public class CommonFeaturesUtils {
                 .returned(false)
                 .build();
     }
+
+    public static Loan createLoanNotId() {
+        return Loan.builder()
+                .loanDate(LocalDate.now())
+                .customer("antonio")
+                .returned(false)
+                .build();
+    }
 }
