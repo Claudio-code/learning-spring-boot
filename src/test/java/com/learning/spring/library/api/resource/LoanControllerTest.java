@@ -3,7 +3,6 @@ package com.learning.spring.library.api.resource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learning.spring.library.api.dto.LoanDTO;
 import com.learning.spring.library.api.model.entity.Book;
-import com.learning.spring.library.api.model.entity.Loan;
 import com.learning.spring.library.service.BookService;
 import com.learning.spring.library.service.LoanService;
 import com.learning.spring.library.utils.CommonFeaturesUtils;
@@ -16,13 +15,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.server.ResponseStatusException;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
@@ -63,10 +65,21 @@ class LoanControllerTest {
     }
 
     @Test
-    @DisplayName("sould return error to try make loan if nonexistent book")
+    @DisplayName("should return error to try make loan if nonexistent book")
     void shouldReturnErrorToTryMakeLoanIfNonexistentBook() throws Exception {
         LoanDTO loanDTO = CommonFeaturesUtils.createLoanDTO();
         String json = new ObjectMapper().writeValueAsString(loanDTO);
-        
+
+        BDDMockito.given(bookService.getBookByIsbn(loanDTO.getIsbn()))
+                .willThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST));
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(LOAN_API)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mvc.perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("errors", hasSize(1)));
     }
 }

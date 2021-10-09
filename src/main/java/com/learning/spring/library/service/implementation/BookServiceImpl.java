@@ -68,6 +68,6 @@ public class BookServiceImpl implements BookService {
     @Override
     public Book getBookByIsbn(String isbn) {
         return bookRepository.getBookByIsbn(isbn)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "book not found"));
     }
 }

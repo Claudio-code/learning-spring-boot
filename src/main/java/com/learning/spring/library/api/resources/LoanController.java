@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/loans")
 @RequiredArgsConstructor
-public class LoanController implements BaseController {
+public class LoanController extends BaseController {
     private final LoanService loanService;
     private final BookService bookService;
 

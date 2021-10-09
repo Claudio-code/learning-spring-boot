@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/books")
-public class BookController implements BaseController {
+public class BookController extends BaseController {
     private final BookService service;
     private final ModelMapper modelMapper;
 
