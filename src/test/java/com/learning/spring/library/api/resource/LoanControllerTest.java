@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learning.spring.library.api.dto.LoanDTO;
 import com.learning.spring.library.api.dto.ReturnedLoanDTO;
 import com.learning.spring.library.api.model.entity.Book;
+import com.learning.spring.library.api.model.entity.Loan;
 import com.learning.spring.library.api.resources.LoanController;
 import com.learning.spring.library.exception.BookAlreadyLoanedException;
 import com.learning.spring.library.service.BookService;
@@ -111,8 +112,12 @@ class LoanControllerTest {
     @Test
     @DisplayName("should update loan and return book")
     void shouldUpdateLoanAndReturnBook() throws Exception {
+        Loan loan = CommonFeaturesUtils.createLoan();
+        loan.setId(1L);
         ReturnedLoanDTO returnedLoanDTO = ReturnedLoanDTO.builder().returned(true).build();
         String json = new ObjectMapper().writeValueAsString(returnedLoanDTO);
+
+        BDDMockito.given(loanService.getById(loan.getId())).willReturn(loan);
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.patch(LOAN_API.concat("/1"))
                 .accept(MediaType.APPLICATION_JSON)
@@ -120,5 +125,7 @@ class LoanControllerTest {
                 .content(json);
 
         mvc.perform(request).andExpect(status().isOk());
+        Mockito.verify(loanService, Mockito.times(1))
+                .update(Mockito.any(Loan.class), Mockito.any(ReturnedLoanDTO.class));
     }
 }
