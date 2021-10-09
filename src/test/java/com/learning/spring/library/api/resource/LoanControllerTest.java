@@ -3,6 +3,7 @@ package com.learning.spring.library.api.resource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learning.spring.library.api.dto.LoanDTO;
 import com.learning.spring.library.api.model.entity.Book;
+import com.learning.spring.library.api.resources.LoanController;
 import com.learning.spring.library.service.BookService;
 import com.learning.spring.library.service.LoanService;
 import com.learning.spring.library.utils.CommonFeaturesUtils;
@@ -29,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
-@WebMvcTest
+@WebMvcTest(controllers = LoanController.class)
 @AutoConfigureMockMvc
 class LoanControllerTest {
     static String LOAN_API = "/api/loans";
