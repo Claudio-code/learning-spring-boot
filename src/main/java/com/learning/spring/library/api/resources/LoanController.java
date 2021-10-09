@@ -1,6 +1,8 @@
 package com.learning.spring.library.api.resources;
 
 import com.learning.spring.library.api.dto.LoanDTO;
+import com.learning.spring.library.api.dto.ReturnedLoanDTO;
+import com.learning.spring.library.api.model.entity.Loan;
 import com.learning.spring.library.service.BookService;
 import com.learning.spring.library.service.LoanService;
 import lombok.RequiredArgsConstructor;
@@ -21,5 +23,11 @@ public class LoanController extends BaseController {
         var loan = loanService.save(loanDTO, book);
 
         return loan.getId();
+    }
+
+    @PatchMapping("{id}")
+    public void returnBook(@PathVariable Long id, @RequestBody ReturnedLoanDTO returnedLoanDTO) {
+        Loan loan = loanService.getById(id);
+        loanService.update(loan, returnedLoanDTO);
     }
 }

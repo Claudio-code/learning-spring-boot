@@ -1,12 +1,15 @@
 package com.learning.spring.library.service.implementation;
 
 import com.learning.spring.library.api.dto.LoanDTO;
+import com.learning.spring.library.api.dto.ReturnedLoanDTO;
 import com.learning.spring.library.api.model.entity.Book;
 import com.learning.spring.library.api.model.entity.Loan;
 import com.learning.spring.library.api.model.repository.LoanRepository;
 import com.learning.spring.library.exception.BookAlreadyLoanedException;
 import com.learning.spring.library.service.LoanService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 
@@ -31,5 +34,17 @@ public class LoanServiceImpl implements LoanService {
                 .returned(false)
                 .build();
         return loanRepository.save(loan);
+    }
+
+    @Override
+    public Loan getById(Long id) {
+        return loanRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    @Override
+    public void update(Loan loan, ReturnedLoanDTO returnedLoanDTO) {
+        loan.setReturned(returnedLoanDTO.getReturned());
+        loanRepository.save(loan);
     }
 }

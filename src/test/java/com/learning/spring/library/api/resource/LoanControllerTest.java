@@ -2,6 +2,7 @@ package com.learning.spring.library.api.resource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learning.spring.library.api.dto.LoanDTO;
+import com.learning.spring.library.api.dto.ReturnedLoanDTO;
 import com.learning.spring.library.api.model.entity.Book;
 import com.learning.spring.library.api.resources.LoanController;
 import com.learning.spring.library.exception.BookAlreadyLoanedException;
@@ -105,5 +106,19 @@ class LoanControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("errors", hasSize(1)))
                 .andExpect(jsonPath("errors[0]").value(BookAlreadyLoanedException.MESSAGE));
+    }
+
+    @Test
+    @DisplayName("should update loan and return book")
+    void shouldUpdateLoanAndReturnBook() throws Exception {
+        ReturnedLoanDTO returnedLoanDTO = ReturnedLoanDTO.builder().returned(true).build();
+        String json = new ObjectMapper().writeValueAsString(returnedLoanDTO);
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.patch(LOAN_API.concat("/1"))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mvc.perform(request).andExpect(status().isOk());
     }
 }
