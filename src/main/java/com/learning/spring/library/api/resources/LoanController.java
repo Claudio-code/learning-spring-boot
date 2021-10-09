@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/loans")
 @RequiredArgsConstructor
@@ -26,8 +28,13 @@ public class LoanController extends BaseController {
     }
 
     @PatchMapping("{id}")
-    public void returnBook(@PathVariable Long id, @RequestBody ReturnedLoanDTO returnedLoanDTO) {
+    public void returnBook(@PathVariable Long id, @RequestBody @Valid ReturnedLoanDTO returnedLoanDTO) {
         Loan loan = loanService.getById(id);
         loanService.update(loan, returnedLoanDTO);
+    }
+
+    @GetMapping("{id}")
+    public Loan getOne(@PathVariable Long id) {
+        return loanService.getById(id);
     }
 }

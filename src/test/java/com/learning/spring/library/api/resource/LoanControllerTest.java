@@ -150,4 +150,20 @@ class LoanControllerTest {
         Mockito.verify(loanService, Mockito.never())
                 .update(Mockito.any(Loan.class), Mockito.any(ReturnedLoanDTO.class));
     }
+
+    @Test
+    @DisplayName("should return loan`s info")
+    void shouldReturnDataOfLoan() throws Exception {
+        Loan loan = CommonFeaturesUtils.createLoan();
+        loan.setId(1L);
+        loan.setBook(CommonFeaturesUtils.createBook());
+
+        BDDMockito.given(loanService.getById(loan.getId())).willReturn(loan);
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(LOAN_API.concat("/1"));
+
+        mvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id").value(loan.getId()))
+                .andExpect(jsonPath("book.id").value(loan.getBook().getId()));
+    }
 }

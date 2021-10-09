@@ -7,6 +7,8 @@ import com.learning.spring.library.api.model.entity.Loan;
 import com.learning.spring.library.api.model.repository.LoanRepository;
 import com.learning.spring.library.exception.BookAlreadyLoanedException;
 import com.learning.spring.library.service.LoanService;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -37,12 +39,14 @@ public class LoanServiceImpl implements LoanService {
     }
 
     @Override
+    @Cacheable(cacheNames = Loan.CACHE_NAME, key = "#id")
     public Loan getById(Long id) {
         return loanRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @Override
+    @CachePut(cacheNames = Loan.CACHE_NAME, key = "#loan.id")
     public void update(Loan loan, ReturnedLoanDTO returnedLoanDTO) {
         loan.setReturned(returnedLoanDTO.getReturned());
         loanRepository.save(loan);
