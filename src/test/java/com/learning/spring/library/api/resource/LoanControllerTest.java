@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learning.spring.library.api.dto.LoanDTO;
 import com.learning.spring.library.api.model.entity.Book;
 import com.learning.spring.library.api.resources.LoanController;
+import com.learning.spring.library.exception.BookAlreadyLoanedException;
 import com.learning.spring.library.service.BookService;
 import com.learning.spring.library.service.LoanService;
 import com.learning.spring.library.utils.CommonFeaturesUtils;
@@ -82,5 +83,27 @@ class LoanControllerTest {
         mvc.perform(request)
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("errors", hasSize(1)));
+    }
+
+    @Test
+    @DisplayName("should return error when try save loan book already loaned")
+    void shouldReturnErrorWhenTrySaveLoanBookAlreadyLoaned() throws Exception {
+        var loanDTO = CommonFeaturesUtils.createLoanDTO();
+        var book = CommonFeaturesUtils.createBook();
+        String json = new ObjectMapper().writeValueAsString(loanDTO);
+
+        BDDMockito.given(bookService.getBookByIsbn(loanDTO.getIsbn())).willReturn(book);
+        BDDMockito.given(loanService.save(Mockito.any(LoanDTO.class), Mockito.any(Book.class)))
+                .willThrow(new BookAlreadyLoanedException());
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(LOAN_API)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mvc.perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("errors", hasSize(1)))
+                .andExpect(jsonPath("errors[0]").value(BookAlreadyLoanedException.MESSAGE));
     }
 }
