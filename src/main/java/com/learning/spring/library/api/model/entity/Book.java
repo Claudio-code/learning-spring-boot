@@ -29,10 +29,6 @@ public class Book implements Serializable {
     @Column
     private String isbn;
 
-    @OneToOne
-    @JoinColumn(name = "id")
-    private Loan loan;
-
     public void validFields() {
         if (isbn != null || author != null || title != null || id != null) {
             return;

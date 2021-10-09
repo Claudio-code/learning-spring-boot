@@ -54,7 +54,7 @@ public class LoanServiceTest {
     void shouldReturnErrorIfThisBookAlreadyLoaned() {
         Book book = CommonFeaturesUtils.createBook();
         LoanDTO loanDTO = CommonFeaturesUtils.createLoanDTO();
-        book.setLoan(CommonFeaturesUtils.createLoan());
+        Mockito.when(loanRepository.existsByBookAndNotReturned(book)).thenReturn(true);
         Throwable throwable = Assertions.catchThrowable(() -> loanService.save(loanDTO, book));
 
         Mockito.verify(loanRepository, Mockito.never()).save(CommonFeaturesUtils.createLoan());

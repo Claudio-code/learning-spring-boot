@@ -23,7 +23,8 @@ public class Loan implements Serializable {
     @Column
     private String customer;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_book")
+    @ManyToOne
     private Book book;
 
     @Column

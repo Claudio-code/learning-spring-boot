@@ -20,7 +20,7 @@ public class LoanServiceImpl implements LoanService {
 
     @Override
     public Loan save(LoanDTO loanDTO, Book book) {
-        if (book.getLoan() != null) {
+        if (loanRepository.existsByBookAndNotReturned(book)) {
             throw new BookAlreadyLoanedException();
         }
 
