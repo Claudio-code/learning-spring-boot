@@ -7,7 +7,6 @@ import com.learning.spring.library.api.resources.BookController;
 import com.learning.spring.library.exception.IsbnAlreadyUsedByAnotherBookException;
 import com.learning.spring.library.service.BookService;
 import com.learning.spring.library.utils.CommonFeaturesUtils;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
