@@ -1,7 +1,11 @@
 package com.learning.spring.library.utils;
 
 import com.learning.spring.library.api.dto.BookDTO;
+import com.learning.spring.library.api.dto.LoanDTO;
 import com.learning.spring.library.api.model.entity.Book;
+import com.learning.spring.library.api.model.entity.Loan;
+
+import java.time.LocalDate;
 
 public class CommonFeaturesUtils {
     public static BookDTO createBookDTO() {
@@ -38,4 +42,19 @@ public class CommonFeaturesUtils {
                 .build();
     }
 
+    public static LoanDTO createLoanDTO() {
+        return LoanDTO.builder()
+                .isbn("123")
+                .customer("antonio")
+                .build();
+    }
+
+    public static Loan createLoan() {
+        return Loan.builder()
+                .id(1L)
+                .loanDate(LocalDate.now())
+                .customer("antonio")
+                .returned(false)
+                .build();
+    }
 }
