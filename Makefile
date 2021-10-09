@@ -9,3 +9,6 @@ start:
 
 run-tests:
 	mvn clean test
+
+run-api-local:
+	mvn spring-boot:run -Dspring-boot.run.profiles=dev

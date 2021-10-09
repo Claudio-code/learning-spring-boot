@@ -61,4 +61,12 @@ class LoanControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(content().string("1"));
     }
+
+    @Test
+    @DisplayName("sould return error to try make loan if nonexistent book")
+    void shouldReturnErrorToTryMakeLoanIfNonexistentBook() throws Exception {
+        LoanDTO loanDTO = CommonFeaturesUtils.createLoanDTO();
+        String json = new ObjectMapper().writeValueAsString(loanDTO);
+        
+    }
 }
