@@ -6,7 +6,6 @@ import com.learning.spring.library.exception.InvalidBookException;
 import com.learning.spring.library.exception.IsbnAlreadyUsedByAnotherBookException;
 import com.learning.spring.library.service.implementation.BookServiceImpl;
 import com.learning.spring.library.utils.CommonFeaturesUtils;
-
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +22,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -146,5 +144,18 @@ class BookServiceTest {
         assertThat(result.getContent()).isEqualTo(list);
         assertThat(result.getPageable().getPageNumber()).isEqualTo(0);
         assertThat(result.getPageable().getPageSize()).isEqualTo(10);
+    }
+
+    @Test
+    @DisplayName("should book by isbn")
+    void shouldBookByIsbn() {
+        Book book = CommonFeaturesUtils.createBook();
+        String isbn = "123";
+        book.setIsbn(isbn);
+        Mockito.when(bookRepository.getBookByIsbn(isbn)).thenReturn(Optional.of(book));
+        Book bookFound = bookService.getBookByIsbn(isbn);
+
+        Mockito.verify(bookRepository, Mockito.times(1)).getBookByIsbn(isbn);
+        assertThat(bookFound.getIsbn()).isEqualTo(isbn);
     }
 }
