@@ -1,6 +1,7 @@
 package com.learning.spring.library.service.implementation;
 
 import com.learning.spring.library.api.dto.LoanDTO;
+import com.learning.spring.library.api.dto.LoanFilterDTO;
 import com.learning.spring.library.api.dto.ReturnedLoanDTO;
 import com.learning.spring.library.api.model.entity.Book;
 import com.learning.spring.library.api.model.entity.Loan;
@@ -9,6 +10,8 @@ import com.learning.spring.library.exception.BookAlreadyLoanedException;
 import com.learning.spring.library.service.LoanService;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -50,5 +53,14 @@ public class LoanServiceImpl implements LoanService {
     public void update(Loan loan, ReturnedLoanDTO returnedLoanDTO) {
         loan.setReturned(returnedLoanDTO.getReturned());
         loanRepository.save(loan);
+    }
+
+    @Override
+    public Page<Loan> find(LoanFilterDTO filter, Pageable pageable) {
+        return loanRepository.findByBookIsbnOrCustomer(
+                filter.getIsbn(),
+                filter.getCustomer(),
+                pageable
+        );
     }
 }

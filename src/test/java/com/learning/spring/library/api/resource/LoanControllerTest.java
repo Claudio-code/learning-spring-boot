@@ -2,6 +2,7 @@ package com.learning.spring.library.api.resource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learning.spring.library.api.dto.LoanDTO;
+import com.learning.spring.library.api.dto.LoanFilterDTO;
 import com.learning.spring.library.api.dto.ReturnedLoanDTO;
 import com.learning.spring.library.api.model.entity.Book;
 import com.learning.spring.library.api.model.entity.Loan;
@@ -19,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
@@ -27,6 +30,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.data.domain.PageRequest;
+
+import java.util.Arrays;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -165,5 +171,30 @@ class LoanControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id").value(loan.getId()))
                 .andExpect(jsonPath("book.id").value(loan.getBook().getId()));
+    }
+
+    @Test
+    @DisplayName("should find loan and return it")
+    void shouldFindLoanAndReturnIt() throws Exception {
+        LoanDTO loanDTO = CommonFeaturesUtils.createLoanDTO();
+        Loan loan = CommonFeaturesUtils.createLoan();
+        Book book = CommonFeaturesUtils.createBook();
+        loan.setBook(book);
+        String queryString = "?isbn=%s&customer=%s&page=0&size=100";
+        String queryStringFormatted = String.format(queryString, loanDTO.getIsbn(), loan.getCustomer());
+
+        BDDMockito.given(loanService.find(Mockito.any(LoanFilterDTO.class), Mockito.any(PageRequest.class)))
+                .willReturn(new PageImpl<>(Arrays.asList(loan), PageRequest.of(0, 100), 1));
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get(LOAN_API.concat(queryStringFormatted))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("content", hasSize(1)))
+                .andExpect(jsonPath("totalElements").value(1))
+                .andExpect(jsonPath("pageable.pageSize").value(100))
+                .andExpect(jsonPath("pageable.pageNumber").value(0));
     }
 }
