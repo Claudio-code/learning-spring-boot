@@ -18,8 +18,8 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ./.database/data:/var/lib/mysql
-      - ./.database:/docker-entrypoint-initdb.d
+      - library_api_mysql:/var/lib/mysql
+      - library_api_mysql:/docker-entrypoint-initdb.d
     environment:
       - MYSQL_DATABASE=library
       - MYSQL_ROOT_PASSWORD=root
@@ -27,28 +27,56 @@ services:
       - library-api-network
 
   redis-commander:
-     container_name: redis-commander
-     hostname: redis-commander
-     image: rediscommander/redis-commander:latest
-     environment:
-     - REDIS_HOSTS=library-api-redis
-     ports:
-     - "1004:8081"
-     networks:
-       - library-api-network
-     depends_on:
-       - library-api-redis
+    container_name: redis-commander
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=library-api-redis
+    ports:
+      - "1004:8081"
+    networks:
+      - library-api-network
+    depends_on:
+      - library-api-redis
 
   library-api-redis:
-    image: redis:alpine
+    image: redis:6.0.16-alpine3.16
     container_name: library-api-redis
     ports:
       - "6379:6379"
     volumes:
-      - ./.database/redis:/data
+      - library_api_redis:/data
     networks:
       - library-api-network
+
+  library-api-prometheus:
+    image: prom/prometheus:v2.36.1
+    container_name: library-api-prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - library-api-network
+
+  library-api-grafana:
+    image: grafana/grafana:9.0.0
+    container_name: library-api-grafana
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./grafana.env
+    networks:
+      - library-api-network
+    depends_on:
+      - library-api
 
 networks:
   library-api-network:
     driver: bridge
+
+volumes:
+  library_api_mysql:
+    driver: local
+  library_api_redis:
+    driver: local
