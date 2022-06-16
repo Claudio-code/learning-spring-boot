@@ -40,7 +40,7 @@ services:
       - library-api-redis
 
   library-api-redis:
-    image: redis:6.0.16-alpine3.16
+    image: redis:alpine
     container_name: library-api-redis
     ports:
       - "6379:6379"
@@ -79,4 +79,3 @@ volumes:
   library_api_mysql:
     driver: local
   library_api_redis:
-    driver: local
