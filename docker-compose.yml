@@ -58,6 +58,8 @@ services:
       - "9090:9090"
     networks:
       - library-api-network
+    depends_on:
+      - library-api
 
   library-api-grafana:
     image: grafana/grafana:9.0.0
