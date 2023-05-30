@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: spring-api
+  name: spring-api
+  namespace: learning-spring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      labels:
+        app: spring-api
+  template:
+    metadata:
+      labels:
+        app: spring-api
+    spec:
+      containers:
+        - image: claudio2424/learning-spring:latest
+          imagePullPolicy: Always
+          name: spring-api
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+
