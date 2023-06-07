@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: spring-redis
+  name: spring-redis
+  namespace: learning-spring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      labels:
+        app: spring-redis
+  template:
+    metadata:
+      labels:
+        app: spring-redis
+    spec:
+      containers:
+      - name: spring-redis
+        image: redis:alpine
+        ports:
+        - containerPort: 6379
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: spring-redis
+  name: spring-redis
+  namespace: learning-redis
+spec:
+  externalTrafficPolicy: Cluster
+  ports:
+  - port: 6379
+    targetPort: 3244
+    protocol: TCP
+    targetPort: 6379
+  type: NodePort
+  selector:
+    app: spring-redis

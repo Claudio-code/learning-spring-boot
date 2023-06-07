@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: spring-api
+  name: spring-api
+  namespace: learning-spring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      labels:
+        app: spring-api
+  template:
+    metadata:
+      labels:
+        app: spring-api
+    spec:
+      containers:
+        - image: claudio2424/learning-spring:latest
+          imagePullPolicy: Always
+          name: spring-api
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+          - name: SPRING_PROFILES_ACTIVE
+            value: prod
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: spring-api
+  name: spring-api
+  namespace: learning-spring
+spec:
+  externalTrafficPolicy: Cluster
+  ports:
+  - port: 8080
+    nodePort: 3233
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: spring-api
+  type: NodePort
+
