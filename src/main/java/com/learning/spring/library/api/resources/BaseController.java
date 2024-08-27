@@ -27,6 +27,6 @@ public class BaseController {
 
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<ApiErrors> handleResponseStatusException(ResponseStatusException statusException) {
-        return new ResponseEntity<>(new ApiErrors(statusException), statusException.getStatus());
+        return new ResponseEntity<>(new ApiErrors(statusException), HttpStatus.valueOf(statusException.getStatusCode().value()));
     }
 }

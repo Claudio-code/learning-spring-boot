@@ -6,6 +6,7 @@
     <option name="MAIN_CLASS_NAME" value="com.learning.spring.library.Application" />
     <module name="demo" />
     <option name="PROGRAM_PARAMETERS" value="http://localhost:8080" />
+    <option name="VM_PARAMETERS" value="-XX:+UseSerialGC -XX:+UseStringDeduplication -Xss512k -XX:MaxRAM=200m" />
     <extension name="net.ashald.envfile">
       <option name="IS_ENABLED" value="false" />
       <option name="IS_SUBST" value="false" />

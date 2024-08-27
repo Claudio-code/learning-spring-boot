@@ -26,9 +26,9 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book save(Book book) {
-        if (bookRepository.existsByIsbn(book.getIsbn())) {
-            throw new IsbnAlreadyUsedByAnotherBookException();
-        }
+//        if (bookRepository.existsByIsbn(book.getIsbn())) {
+//            throw new IsbnAlreadyUsedByAnotherBookException();
+//        }
         return bookRepository.save(book);
     }
 
